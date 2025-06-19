@@ -43,12 +43,46 @@ class GameScene: SKScene {
     }
     
     private func addDusterImage() {
-        dusterImage.size = CGSize(width: 100, height: 130)
-        dusterImage.anchorPoint = CGPoint(x: 1.0, y: 1.0)
-        dusterImage.position = CGPoint(x: size.width - 25, y: size.height - 90)
+        let width = boxImage.size.width / 4
+        let height = width * 1.3
+        
+        dusterImage.size = CGSize(width: width, height: width * 1.3)
+        dusterImage.anchorPoint = CGPoint(x: 0.5, y: 0.2)
+        dusterImage.position = CGPoint(x: size.width - (width / 2) - 25, y: size.height - (height / 2) - 90)
         dusterImage.zPosition = 2
         
         addChild(dusterImage)
+    }
+    
+    private var isDusterTouched: Bool = false
+}
+
+extension GameScene {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        
+        let location = touch.location(in: self)
+        
+        // calculate the range of current duster's location >> to check if user started touching correct location
+        let xRange: ClosedRange<CGFloat> = dusterImage.position.x - dusterImage.size.width / 2 ... dusterImage.position.x + dusterImage.size.width / 2
+        let yRange: ClosedRange<CGFloat> = dusterImage.position.y - dusterImage.size.height * 0.2 ... dusterImage.position.y + dusterImage.size.height * 0.3
+        
+        isDusterTouched = xRange.contains(location.x) && yRange.contains(location.y)
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        
+        let location = touch.location(in: self)
+        
+        if isDusterTouched {
+            dusterImage.position = location
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        isDusterTouched = false
     }
 }
 
