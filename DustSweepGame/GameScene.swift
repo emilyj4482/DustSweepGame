@@ -5,6 +5,7 @@
 //  Created by EMILY on 19/06/2025.
 //
 
+import SwiftUI
 import SpriteKit
 
 class GameScene: SKScene {
@@ -13,11 +14,14 @@ class GameScene: SKScene {
     
     private let boxImage = SKSpriteNode(imageNamed: Assets.box.rawValue)
     
+    private let dusterImage = SKSpriteNode(imageNamed: Assets.duster.rawValue)
+    
     override func didMove(to view: SKView) {
         self.size = view.bounds.size
         
         addBackgroundImage()
         addBoxImage()
+        addDusterImage()
     }
     
     private func addBackgroundImage() {
@@ -37,4 +41,17 @@ class GameScene: SKScene {
         
         addChild(boxImage)
     }
+    
+    private func addDusterImage() {
+        dusterImage.size = CGSize(width: 100, height: 130)
+        dusterImage.anchorPoint = CGPoint(x: 1.0, y: 1.0)
+        dusterImage.position = CGPoint(x: size.width - 25, y: size.height - 90)
+        dusterImage.zPosition = 2
+        
+        addChild(dusterImage)
+    }
+}
+
+#Preview {
+    ContentView()
 }

@@ -10,4 +10,5 @@ import Foundation
 enum Assets: String {
     case woodenfloor
     case box
+    case duster
 }
