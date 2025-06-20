@@ -46,10 +46,10 @@ class GameScene: SKScene {
         let width = boxImage.size.width / 4
         let height = width * 1.3
         
-        dusterImage.size = CGSize(width: width, height: width * 1.3)
+        dusterImage.size = CGSize(width: width, height: height)
         dusterImage.anchorPoint = CGPoint(x: 0.5, y: 0.2)
         dusterImage.position = CGPoint(x: size.width - (width / 2) - 25, y: size.height - (height / 2) - 90)
-        dusterImage.zPosition = 2
+        dusterImage.zPosition = 3
         
         addChild(dusterImage)
     }
