@@ -16,12 +16,18 @@ class GameScene: SKScene {
     
     private let dusterImage = SKSpriteNode(imageNamed: Assets.duster.rawValue)
     
+    private let dust1 = DustImageNode(dust: .first)
+    private let dust2 = DustImageNode(dust: .second)
+    private let dust3 = DustImageNode(dust: .third)
+    private let dust4 = DustImageNode(dust: .fourth)
+    
     override func didMove(to view: SKView) {
         self.size = view.bounds.size
         
         addBackgroundImage()
         addBoxImage()
         addDusterImage()
+        addDusts()
     }
     
     private func addBackgroundImage() {
@@ -52,6 +58,15 @@ class GameScene: SKScene {
         dusterImage.zPosition = 3
         
         addChild(dusterImage)
+    }
+    
+    private func addDusts() {
+        dust1.position = CGPoint(x: boxImage.position.x - 120, y: boxImage.position.y)
+        dust2.position = CGPoint(x: boxImage.position.x - 60, y: boxImage.position.y)
+        dust3.position = CGPoint(x: boxImage.position.x + 60, y: boxImage.position.y)
+        dust4.position = CGPoint(x: boxImage.position.x + 120, y: boxImage.position.y)
+        
+        [dust1, dust2, dust3, dust4].forEach { addChild($0) }
     }
     
     private var isDusterTouched: Bool = false
