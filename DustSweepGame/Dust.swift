@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Dust {
+enum Dust: CaseIterable {
     case first
     case second
     case third

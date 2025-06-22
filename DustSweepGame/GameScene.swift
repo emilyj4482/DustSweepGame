@@ -27,7 +27,10 @@ class GameScene: SKScene {
         addBackgroundImage()
         addBoxImage()
         addDusterImage()
-        addDusts()
+        
+        for _ in 1...170 {
+            addDusts()
+        }
     }
     
     private func addBackgroundImage() {
@@ -61,12 +64,19 @@ class GameScene: SKScene {
     }
     
     private func addDusts() {
-        dust1.position = CGPoint(x: boxImage.position.x - 120, y: boxImage.position.y)
-        dust2.position = CGPoint(x: boxImage.position.x - 60, y: boxImage.position.y)
-        dust3.position = CGPoint(x: boxImage.position.x + 60, y: boxImage.position.y)
-        dust4.position = CGPoint(x: boxImage.position.x + 120, y: boxImage.position.y)
+        let dustName = Dust.allCases.randomElement() ?? .fourth
         
-        [dust1, dust2, dust3, dust4].forEach { addChild($0) }
+        let xRange: ClosedRange<CGFloat> = 55...(size.width - 55)
+        let yOffset = (size.height - boxImage.size.width) / 2
+        let yRange: ClosedRange<CGFloat> = (yOffset + 30)...(yOffset + boxImage.size.height - 30)
+    
+        let x = CGFloat.random(in: xRange)
+        let y = CGFloat.random(in: yRange)
+        
+        let dust = DustImageNode(dust: dustName)
+        dust.position = CGPoint(x: x, y: y)
+        
+        addChild(dust)
     }
     
     private var isDusterTouched: Bool = false
