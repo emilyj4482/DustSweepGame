@@ -23,7 +23,7 @@ class GameScene: SKScene {
         addBoxImage()
         addDusterImage()
         
-        for _ in 1...170 {
+        for _ in 1...200 {
             addDustImages()
         }
     }
@@ -97,12 +97,29 @@ extension GameScene {
         let location = touch.location(in: self)
         
         if isDusterTouched {
-            dusterImage.position = location
+            let moveAction = SKAction.move(to: location, duration: 0.07)
+            dusterImage.run(moveAction)
+            cleanDusts()
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         isDusterTouched = false
+    }
+    
+    private func cleanDusts() {
+        let x = dusterImage.position.x
+        let y = dusterImage.position.y - dusterImage.size.height * 0.2
+        let point = CGPoint(x: x, y: y)
+        
+        for node in nodes(at: point) where (node as? DustImageNode) != nil {
+            
+            let moveAction = SKAction.move(to: point, duration: 0.05)
+            let fadeAction = SKAction.fadeAlpha(to: 0, duration: 0.7)
+            let removeAction = SKAction.removeFromParent()
+            let sequenceAction = SKAction.sequence([moveAction, fadeAction, removeAction])
+            node.run(sequenceAction)
+        }
     }
 }
 
