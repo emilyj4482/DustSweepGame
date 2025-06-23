@@ -103,8 +103,7 @@ extension GameScene {
         
         // play sweep sound only when duster image is touched
         if isDusterTouched {
-            addChild(sweepSound)
-            sweepSound.run(SKAction.changeVolume(to: 1.0, duration: 0.1))
+            playSweepSound()
         }
     }
     
@@ -128,12 +127,17 @@ extension GameScene {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         isDusterTouched = false
         
-        // sweep sound has to stop when not sweeping
-        if sweepSound.parent != nil {   // there's posibility the node got removed during touchesMoved
-            let fadeOutAction = SKAction.changeVolume(to: 0.0, duration: 0.3)
-            let removeAction = SKAction.removeFromParent()
-            sweepSound.run(SKAction.sequence([fadeOutAction, removeAction]))
+        // sweep sound has to be off when not sweeping
+        let fadeOutAction = SKAction.changeVolume(to: 0, duration: 0.3)
+        sweepSound.run(fadeOutAction)
+    }
+    
+    private func playSweepSound() {
+        if sweepSound.parent == nil {
+            addChild(sweepSound)
         }
+        let changeVolumeAction = SKAction.changeVolume(to: 1.0, duration: 0.1)
+        sweepSound.run(changeVolumeAction)
     }
     
     private func cleanDusts() {
@@ -158,11 +162,9 @@ extension GameScene {
         
         // 1. fadeOut sweep sound
         let fadeOutAction = SKAction.changeVolume(to: 0.0, duration: 1.0)
-        let removeAction = SKAction.removeFromParent()
         
-        let sweepSoundSequence = SKAction.sequence([fadeOutAction, removeAction])
-        
-        sweepSound.run(sweepSoundSequence) { [weak self] in
+        // 2. play clear sound after sweep cound fades out
+        sweepSound.run(fadeOutAction) { [weak self] in
             let clearSound = SKAudioNode(fileNamed: Assets.clearSound)
             clearSound.autoplayLooped = false
             self?.addChild(clearSound)
@@ -172,8 +174,9 @@ extension GameScene {
             let playAction = SKAction.play()
             // wait 2 seconds(play time) before removing node from parent
             let waitAction = SKAction.wait(forDuration: 2.0)
+            let removeAction = SKAction.removeFromParent()
             
-            let sequence = SKAction.sequence([setVolumeAction, playAction,waitAction, removeAction])
+            let sequence = SKAction.sequence([setVolumeAction, playAction, waitAction, removeAction])
             
             clearSound.run(sequence)
         }
