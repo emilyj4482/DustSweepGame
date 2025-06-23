@@ -16,11 +16,6 @@ class GameScene: SKScene {
     
     private let dusterImage = SKSpriteNode(imageNamed: Assets.duster.rawValue)
     
-    private let dust1 = DustImageNode(dust: .first)
-    private let dust2 = DustImageNode(dust: .second)
-    private let dust3 = DustImageNode(dust: .third)
-    private let dust4 = DustImageNode(dust: .fourth)
-    
     override func didMove(to view: SKView) {
         self.size = view.bounds.size
         
@@ -29,7 +24,7 @@ class GameScene: SKScene {
         addDusterImage()
         
         for _ in 1...170 {
-            addDusts()
+            addDustImages()
         }
     }
     
@@ -63,8 +58,8 @@ class GameScene: SKScene {
         addChild(dusterImage)
     }
     
-    private func addDusts() {
-        let dustName = Dust.allCases.randomElement() ?? .fourth
+    private func addDustImages() {
+        let randomDust = Dust.allCases.randomElement() ?? .fourth
         
         let xRange: ClosedRange<CGFloat> = 55...(size.width - 55)
         let yOffset = (size.height - boxImage.size.width) / 2
@@ -73,7 +68,7 @@ class GameScene: SKScene {
         let x = CGFloat.random(in: xRange)
         let y = CGFloat.random(in: yRange)
         
-        let dust = DustImageNode(dust: dustName)
+        let dust = DustImageNode(dust: randomDust)
         dust.position = CGPoint(x: x, y: y)
         
         addChild(dust)
