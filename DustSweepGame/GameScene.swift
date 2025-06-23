@@ -16,6 +16,15 @@ class GameScene: SKScene {
     
     private let dusterImage = SKSpriteNode(imageNamed: Assets.duster.rawValue)
     
+    private let sweepSound: SKAudioNode = {
+        let node = SKAudioNode(fileNamed: Assets.sweepSound)
+        
+        node.autoplayLooped = true
+        node.isPositional = true
+        
+        return node
+    }()
+    
     override func didMove(to view: SKView) {
         self.size = view.bounds.size
         
@@ -89,6 +98,10 @@ extension GameScene {
         let yRange: ClosedRange<CGFloat> = dusterImage.position.y - dusterImage.size.height * 0.2 ... dusterImage.position.y + dusterImage.size.height * 0.3
         
         isDusterTouched = xRange.contains(location.x) && yRange.contains(location.y)
+        
+        if isDusterTouched {
+            addChild(sweepSound)
+        }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -105,6 +118,7 @@ extension GameScene {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         isDusterTouched = false
+        sweepSound.removeFromParent()
     }
     
     private func cleanDusts() {

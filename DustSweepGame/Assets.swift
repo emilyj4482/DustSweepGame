@@ -11,4 +11,6 @@ enum Assets: String {
     case woodenfloor
     case box
     case duster
+    
+    static let sweepSound: String = "sweepSound.m4a"
 }
