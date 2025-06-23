@@ -13,4 +13,5 @@ enum Assets: String {
     case duster
     
     static let sweepSound: String = "sweepSound.m4a"
+    static let clearSound: String = "clearSound.mp3"
 }

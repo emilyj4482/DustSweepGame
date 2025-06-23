@@ -13,6 +13,7 @@ class DustImageNode: SKSpriteNode {
         let size = dust.size
         super.init(texture: texture, color: .clear, size: size)
         zPosition = 2
+        name = "dust"
     }
     
     required init?(coder aDecoder: NSCoder) {
