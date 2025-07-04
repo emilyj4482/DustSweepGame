@@ -16,6 +16,8 @@ class GameScene: SKScene {
     
     private let dusterImage = SKSpriteNode(imageNamed: Assets.duster.rawValue)
     
+    private let restartImage = SKSpriteNode(imageNamed: Assets.restart.rawValue)
+    
     private let sweepSound: SKAudioNode = {
         let node = SKAudioNode(fileNamed: Assets.sweepSound)
         
@@ -31,10 +33,9 @@ class GameScene: SKScene {
         addBackgroundImage()
         addBoxImage()
         addDusterImage()
+        setupRestartButton()
         
-        for _ in 1...200 {
-            addDustImages()
-        }
+        addDusts()
     }
     
     private func addBackgroundImage() {
@@ -67,7 +68,12 @@ class GameScene: SKScene {
         addChild(dusterImage)
     }
     
-    private func addDustImages() {
+    private func setupRestartButton() {
+        restartImage.size = CGSize(width: 40, height: 40)
+        restartImage.position = CGPoint(x: 40, y: size.height - 135)
+    }
+    
+    private func addDustImage() {
         let randomDust = Dust.allCases.randomElement() ?? .fourth
         
         let xRange: ClosedRange<CGFloat> = 55...(size.width - 55)
@@ -83,9 +89,17 @@ class GameScene: SKScene {
         addChild(dust)
     }
     
+    private func addDusts() {
+        for _ in 1...200 {
+            addDustImage()
+        }
+    }
+    
     private var isDusterTouched: Bool = false
     
     private var hasClearSoundPlayed: Bool = false
+    
+    private var isGameOver: Bool = false
 }
 
 extension GameScene {
@@ -105,6 +119,12 @@ extension GameScene {
         if isDusterTouched {
             playSweepSound()
         }
+        
+        if restartImage.contains(location) {
+            hasClearSoundPlayed = false
+            addDusts()
+            restartImage.removeFromParent()
+        }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -120,6 +140,7 @@ extension GameScene {
             // when all dusts get cleared, stop sweep sound and play clear sound
             if scene?.children.filter({ $0.name == "dust" }).count == 0 && !hasClearSoundPlayed {
                 playClearSound()
+                addChild(restartImage)
             }
         }
     }
@@ -146,7 +167,7 @@ extension GameScene {
         let point = CGPoint(x: x, y: y)
         
         for node in nodes(at: point) where (node as? DustImageNode) != nil {
-            let moveAction = SKAction.move(to: point, duration: 0.05)
+            let moveAction = SKAction.move(to: point, duration: 0.03)
             let fadeAction = SKAction.fadeAlpha(to: 0, duration: 0.7)
             let removeAction = SKAction.removeFromParent()
             
