@@ -62,10 +62,14 @@ class GameScene: SKScene {
         
         dusterImage.size = CGSize(width: width, height: height)
         dusterImage.anchorPoint = CGPoint(x: 0.5, y: 0.2)
-        dusterImage.position = CGPoint(x: size.width - (width / 2) - 25, y: size.height - (height / 2) - 90)
         dusterImage.zPosition = 3
+        setDusterPosition()
         
         addChild(dusterImage)
+    }
+    
+    private func setDusterPosition() {
+        dusterImage.position = CGPoint(x: size.width - (dusterImage.size.width / 2) - 25, y: size.height - (dusterImage.size.height / 2) - 90)
     }
     
     private func setupRestartButton() {
@@ -124,6 +128,7 @@ extension GameScene {
             hasClearSoundPlayed = false
             addDusts()
             restartImage.removeFromParent()
+            setDusterPosition()
         }
     }
     
