@@ -35,7 +35,7 @@ class GameScene: SKScene {
         addHandImage()
         setupRestartButton()
         
-        addDirts()
+        addDusts()
     }
     
     private func addBackgroundImage() {
@@ -63,9 +63,7 @@ class GameScene: SKScene {
         let width = catFaceImage.size.width / 4
         
         handImage.size = CGSize(width: width, height: width)
-        handImage.anchorPoint = CGPoint(x: 0.5, y: 0.2)
         handImage.zPosition = 3
-        
         setHandPosition()
         
         addChild(handImage)
@@ -80,7 +78,7 @@ class GameScene: SKScene {
         restartImage.position = CGPoint(x: 40, y: size.height - 135)
     }
     
-    private func addDirtImage() {
+    private func addDustImage() {
         let xRange: ClosedRange<CGFloat> = 60...(size.width - 60)
         let yOffset = (size.height - catFaceImage.size.width) / 2
         let yRange: ClosedRange<CGFloat> = (yOffset + 40)...(yOffset + catFaceImage.size.height - 40)
@@ -88,15 +86,15 @@ class GameScene: SKScene {
         let x = CGFloat.random(in: xRange)
         let y = CGFloat.random(in: yRange)
         
-        let dirt = DirtImageNode()
-        dirt.position = CGPoint(x: x, y: y)
+        let dust = DustImageNode()
+        dust.position = CGPoint(x: x, y: y)
         
-        addChild(dirt)
+        addChild(dust)
     }
     
-    private func addDirts() {
+    private func addDusts() {
         for _ in 1...50 {
-            addDirtImage()
+            addDustImage()
         }
     }
     
@@ -116,18 +114,18 @@ extension GameScene {
         
         // calculate the range of current hand image's location >> to check if user started touching correct location
         let xRange: ClosedRange<CGFloat> = handImage.position.x - handImage.size.width / 2 ... handImage.position.x + handImage.size.width / 2
-        let yRange: ClosedRange<CGFloat> = handImage.position.y - handImage.size.height * 0.2 ... handImage.position.y + handImage.size.height * 0.3
+        let yRange: ClosedRange<CGFloat> = handImage.position.y - handImage.size.height / 2 ... handImage.position.y + handImage.size.height / 2
         
         ishandImageTouched = xRange.contains(location.x) && yRange.contains(location.y)
         
         // play purring sound only when hand image is touched
         if ishandImageTouched {
-            playSweepSound()
+            playPurringSound()
         }
         
         if restartImage.contains(location) {
             hasClearSoundPlayed = false
-            addDirts()
+            addDusts()
             restartImage.removeFromParent()
             setHandPosition()
         }
@@ -143,7 +141,7 @@ extension GameScene {
             handImage.run(moveAction)
             cleanDusts()
             
-            // when all dirts get cleared, stop purring sound and play meow sound
+            // when all dusts get cleared, stop purring sound and play meow sound
             if scene?.children.filter({ $0.name == "dust" }).count == 0 && !hasClearSoundPlayed {
                 playClearSound()
                 addChild(restartImage)
@@ -159,7 +157,7 @@ extension GameScene {
         purringSound.run(fadeOutAction)
     }
     
-    private func playSweepSound() {
+    private func playPurringSound() {
         if purringSound.parent == nil {
             addChild(purringSound)
         }
@@ -168,12 +166,12 @@ extension GameScene {
     }
     
     private func cleanDusts() {
-        let x = handImage.position.x
-        let y = handImage.position.y - handImage.size.height * 0.2
+        let x = handImage.position.x - handImage.size.width / 2
+        let y = handImage.position.y + handImage.size.height / 2
         let point = CGPoint(x: x, y: y)
         
-        for node in nodes(at: point) where (node as? DirtImageNode) != nil {
-            let moveAction = SKAction.move(to: point, duration: 0.03)
+        for node in nodes(at: point) where (node as? DustImageNode) != nil {
+            let moveAction = SKAction.move(to: point, duration: 0.01)
             let fadeAction = SKAction.fadeAlpha(to: 0, duration: 0.7)
             let removeAction = SKAction.removeFromParent()
             
@@ -188,7 +186,7 @@ extension GameScene {
         hasClearSoundPlayed = true
         
         // 1. fadeOut purring sound
-        let fadeOutAction = SKAction.changeVolume(to: 0.0, duration: 1.0)
+        let fadeOutAction = SKAction.changeVolume(to: 0.0, duration: 0.5)
         
         // 2. play clear sound after purring sound fades out
         purringSound.run(fadeOutAction) { [weak self] in
