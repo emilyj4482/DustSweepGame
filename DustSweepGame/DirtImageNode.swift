@@ -1,5 +1,5 @@
 //
-//  DustImageNode.swift
+//  DirtImageNode.swift
 //  DustSweepGame
 //
 //  Created by EMILY on 20/06/2025.
@@ -7,10 +7,10 @@
 
 import SpriteKit
 
-class DustImageNode: SKSpriteNode {
+class DirtImageNode: SKSpriteNode {
     init() {
-        let texture = SKTexture(imageNamed: Assets.dust.rawValue)
-        let size = CGSize(width: 50, height: 25)
+        let texture = SKTexture(imageNamed: Assets.dirt.rawValue)
+        let size = CGSize(width: 40, height: 40)
         super.init(texture: texture, color: .clear, size: size)
         zPosition = 2
         name = "dust"

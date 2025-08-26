@@ -35,7 +35,7 @@ class GameScene: SKScene {
         addHandImage()
         setupRestartButton()
         
-        addDusts()
+        addDirts()
     }
     
     private func addBackgroundImage() {
@@ -82,23 +82,23 @@ class GameScene: SKScene {
         restartImage.position = CGPoint(x: 40, y: size.height - 135)
     }
     
-    private func addDustImage() {
-        let xRange: ClosedRange<CGFloat> = 55...(size.width - 55)
+    private func addDirtImage() {
+        let xRange: ClosedRange<CGFloat> = 60...(size.width - 60)
         let yOffset = (size.height - catFaceImage.size.width) / 2
-        let yRange: ClosedRange<CGFloat> = (yOffset + 30)...(yOffset + catFaceImage.size.height - 30)
-    
+        let yRange: ClosedRange<CGFloat> = (yOffset + 40)...(yOffset + catFaceImage.size.height - 40)
+        
         let x = CGFloat.random(in: xRange)
         let y = CGFloat.random(in: yRange)
         
-        let dust = DustImageNode()
-        dust.position = CGPoint(x: x, y: y)
+        let dirt = DirtImageNode()
+        dirt.position = CGPoint(x: x, y: y)
         
-        addChild(dust)
+        addChild(dirt)
     }
     
-    private func addDusts() {
-        for _ in 1...40 {
-            addDustImage()
+    private func addDirts() {
+        for _ in 1...50 {
+            addDirtImage()
         }
     }
     
@@ -129,7 +129,7 @@ extension GameScene {
         
         if restartImage.contains(location) {
             hasClearSoundPlayed = false
-            addDusts()
+            addDirts()
             restartImage.removeFromParent()
             setHandPosition()
         }
@@ -174,7 +174,7 @@ extension GameScene {
         let y = handImage.position.y - handImage.size.height * 0.2
         let point = CGPoint(x: x, y: y)
         
-        for node in nodes(at: point) where (node as? DustImageNode) != nil {
+        for node in nodes(at: point) where (node as? DirtImageNode) != nil {
             let moveAction = SKAction.move(to: point, duration: 0.03)
             let fadeAction = SKAction.fadeAlpha(to: 0, duration: 0.7)
             let removeAction = SKAction.removeFromParent()

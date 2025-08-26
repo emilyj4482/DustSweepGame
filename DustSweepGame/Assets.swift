@@ -9,7 +9,7 @@ import Foundation
 
 enum Assets: String {
     case background
-    case dust
+    case dirt
     case hand
     case restart
     
