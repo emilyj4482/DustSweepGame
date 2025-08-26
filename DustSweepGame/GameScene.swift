@@ -60,17 +60,15 @@ class GameScene: SKScene {
     }
     
     private func addHandImage() {
+        let width = catFaceImage.size.width / 4
         
-            let width = catFaceImage.size.width / 4
-            
-            handImage.size = CGSize(width: width, height: width)
-            
-            handImage.anchorPoint = CGPoint(x: 0.5, y: 0.2)
-            handImage.zPosition = 3
-            setHandPosition()
-            
-            addChild(handImage)
+        handImage.size = CGSize(width: width, height: width)
+        handImage.anchorPoint = CGPoint(x: 0.5, y: 0.2)
+        handImage.zPosition = 3
         
+        setHandPosition()
+        
+        addChild(handImage)
     }
     
     private func setHandPosition() {
@@ -102,7 +100,7 @@ class GameScene: SKScene {
         }
     }
     
-    private var isDusterTouched: Bool = false
+    private var ishandImageTouched: Bool = false
     
     private var hasClearSoundPlayed: Bool = false
     
@@ -116,14 +114,14 @@ extension GameScene {
         
         let location = touch.location(in: self)
         
-        // calculate the range of current duster's location >> to check if user started touching correct location
+        // calculate the range of current hand image's location >> to check if user started touching correct location
         let xRange: ClosedRange<CGFloat> = handImage.position.x - handImage.size.width / 2 ... handImage.position.x + handImage.size.width / 2
         let yRange: ClosedRange<CGFloat> = handImage.position.y - handImage.size.height * 0.2 ... handImage.position.y + handImage.size.height * 0.3
         
-        isDusterTouched = xRange.contains(location.x) && yRange.contains(location.y)
+        ishandImageTouched = xRange.contains(location.x) && yRange.contains(location.y)
         
-        // play sweep sound only when duster image is touched
-        if isDusterTouched {
+        // play purring sound only when hand image is touched
+        if ishandImageTouched {
             playSweepSound()
         }
         
@@ -140,12 +138,12 @@ extension GameScene {
         
         let location = touch.location(in: self)
         
-        if isDusterTouched {
+        if ishandImageTouched {
             let moveAction = SKAction.move(to: location, duration: 0.07)
             handImage.run(moveAction)
             cleanDusts()
             
-            // when all dusts get cleared, stop sweep sound and play clear sound
+            // when all dirts get cleared, stop purring sound and play meow sound
             if scene?.children.filter({ $0.name == "dust" }).count == 0 && !hasClearSoundPlayed {
                 playClearSound()
                 addChild(restartImage)
@@ -154,9 +152,9 @@ extension GameScene {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        isDusterTouched = false
+        ishandImageTouched = false
         
-        // sweep sound has to be off when not sweeping
+        // purring sound has to be off when not hand image moving
         let fadeOutAction = SKAction.changeVolume(to: 0, duration: 0.3)
         purringSound.run(fadeOutAction)
     }
@@ -189,16 +187,16 @@ extension GameScene {
         // clear sound should play only once
         hasClearSoundPlayed = true
         
-        // 1. fadeOut sweep sound
+        // 1. fadeOut purring sound
         let fadeOutAction = SKAction.changeVolume(to: 0.0, duration: 1.0)
         
-        // 2. play clear sound after sweep cound fades out
+        // 2. play clear sound after purring sound fades out
         purringSound.run(fadeOutAction) { [weak self] in
             let clearSound = SKAudioNode(fileNamed: Assets.meowSound)
             clearSound.autoplayLooped = false
             self?.addChild(clearSound)
             
-            // turn down clear sound since sweep sound's originally quiet
+            // turn down clear sound since purring sound's originally quiet
             let setVolumeAction = SKAction.changeVolume(to: 0.3, duration: 0.0)
             let playAction = SKAction.play()
             // wait 2 seconds(play time) before removing node from parent
