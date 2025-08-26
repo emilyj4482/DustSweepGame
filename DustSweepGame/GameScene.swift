@@ -10,16 +10,16 @@ import SpriteKit
 
 class GameScene: SKScene {
     
-    private let backgroundImage = SKSpriteNode(imageNamed: Assets.woodenfloor.rawValue)
+    private let backgroundImage = SKSpriteNode(imageNamed: Assets.background.rawValue)
     
-    private let boxImage = SKSpriteNode(imageNamed: Assets.box.rawValue)
+    private var catFaceImage: SKSpriteNode!
     
-    private let dusterImage = SKSpriteNode(imageNamed: Assets.duster.rawValue)
+    private var handImage = SKSpriteNode(imageNamed: Assets.hand.rawValue)
     
     private let restartImage = SKSpriteNode(imageNamed: Assets.restart.rawValue)
     
-    private let sweepSound: SKAudioNode = {
-        let node = SKAudioNode(fileNamed: Assets.sweepSound)
+    private let purringSound: SKAudioNode = {
+        let node = SKAudioNode(fileNamed: Assets.purringSound)
         
         node.autoplayLooped = true
         node.isPositional = true
@@ -31,8 +31,8 @@ class GameScene: SKScene {
         self.size = view.bounds.size
         
         addBackgroundImage()
-        addBoxImage()
-        addDusterImage()
+        addCatFaceImage()
+        addHandImage()
         setupRestartButton()
         
         addDusts()
@@ -46,30 +46,35 @@ class GameScene: SKScene {
         addChild(backgroundImage)
     }
     
-    private func addBoxImage() {
+    private func addCatFaceImage() {
+        let imageName = Cat.allCases.randomElement()?.rawValue ?? Cat.cheese.rawValue
+        catFaceImage = SKSpriteNode(imageNamed: imageName)
+        
         let width = size.width - 50
         
-        boxImage.size = CGSize(width: width, height: width)
-        boxImage.position = CGPoint(x: size.width / 2, y: size.height / 2)
-        boxImage.zPosition = 1
+        catFaceImage.size = CGSize(width: width, height: width)
+        catFaceImage.position = CGPoint(x: frame.midX, y: frame.midY)
+        catFaceImage.zPosition = 1
         
-        addChild(boxImage)
+        addChild(catFaceImage)
     }
     
-    private func addDusterImage() {
-        let width = boxImage.size.width / 4
-        let height = width * 1.3
+    private func addHandImage() {
         
-        dusterImage.size = CGSize(width: width, height: height)
-        dusterImage.anchorPoint = CGPoint(x: 0.5, y: 0.2)
-        dusterImage.zPosition = 3
-        setDusterPosition()
+            let width = catFaceImage.size.width / 4
+            
+            handImage.size = CGSize(width: width, height: width)
+            
+            handImage.anchorPoint = CGPoint(x: 0.5, y: 0.2)
+            handImage.zPosition = 3
+            setHandPosition()
+            
+            addChild(handImage)
         
-        addChild(dusterImage)
     }
     
-    private func setDusterPosition() {
-        dusterImage.position = CGPoint(x: size.width - (dusterImage.size.width / 2) - 25, y: size.height - (dusterImage.size.height / 2) - 90)
+    private func setHandPosition() {
+        handImage.position = CGPoint(x: size.width - (handImage.size.width / 2) - 25, y: size.height - (handImage.size.height / 2) - 90)
     }
     
     private func setupRestartButton() {
@@ -78,23 +83,21 @@ class GameScene: SKScene {
     }
     
     private func addDustImage() {
-        let randomDust = Dust.allCases.randomElement() ?? .fourth
-        
         let xRange: ClosedRange<CGFloat> = 55...(size.width - 55)
-        let yOffset = (size.height - boxImage.size.width) / 2
-        let yRange: ClosedRange<CGFloat> = (yOffset + 30)...(yOffset + boxImage.size.height - 30)
+        let yOffset = (size.height - catFaceImage.size.width) / 2
+        let yRange: ClosedRange<CGFloat> = (yOffset + 30)...(yOffset + catFaceImage.size.height - 30)
     
         let x = CGFloat.random(in: xRange)
         let y = CGFloat.random(in: yRange)
         
-        let dust = DustImageNode(dust: randomDust)
+        let dust = DustImageNode()
         dust.position = CGPoint(x: x, y: y)
         
         addChild(dust)
     }
     
     private func addDusts() {
-        for _ in 1...200 {
+        for _ in 1...40 {
             addDustImage()
         }
     }
@@ -114,8 +117,8 @@ extension GameScene {
         let location = touch.location(in: self)
         
         // calculate the range of current duster's location >> to check if user started touching correct location
-        let xRange: ClosedRange<CGFloat> = dusterImage.position.x - dusterImage.size.width / 2 ... dusterImage.position.x + dusterImage.size.width / 2
-        let yRange: ClosedRange<CGFloat> = dusterImage.position.y - dusterImage.size.height * 0.2 ... dusterImage.position.y + dusterImage.size.height * 0.3
+        let xRange: ClosedRange<CGFloat> = handImage.position.x - handImage.size.width / 2 ... handImage.position.x + handImage.size.width / 2
+        let yRange: ClosedRange<CGFloat> = handImage.position.y - handImage.size.height * 0.2 ... handImage.position.y + handImage.size.height * 0.3
         
         isDusterTouched = xRange.contains(location.x) && yRange.contains(location.y)
         
@@ -128,7 +131,7 @@ extension GameScene {
             hasClearSoundPlayed = false
             addDusts()
             restartImage.removeFromParent()
-            setDusterPosition()
+            setHandPosition()
         }
     }
     
@@ -139,7 +142,7 @@ extension GameScene {
         
         if isDusterTouched {
             let moveAction = SKAction.move(to: location, duration: 0.07)
-            dusterImage.run(moveAction)
+            handImage.run(moveAction)
             cleanDusts()
             
             // when all dusts get cleared, stop sweep sound and play clear sound
@@ -155,20 +158,20 @@ extension GameScene {
         
         // sweep sound has to be off when not sweeping
         let fadeOutAction = SKAction.changeVolume(to: 0, duration: 0.3)
-        sweepSound.run(fadeOutAction)
+        purringSound.run(fadeOutAction)
     }
     
     private func playSweepSound() {
-        if sweepSound.parent == nil {
-            addChild(sweepSound)
+        if purringSound.parent == nil {
+            addChild(purringSound)
         }
         let changeVolumeAction = SKAction.changeVolume(to: 1.0, duration: 0.1)
-        sweepSound.run(changeVolumeAction)
+        purringSound.run(changeVolumeAction)
     }
     
     private func cleanDusts() {
-        let x = dusterImage.position.x
-        let y = dusterImage.position.y - dusterImage.size.height * 0.2
+        let x = handImage.position.x
+        let y = handImage.position.y - handImage.size.height * 0.2
         let point = CGPoint(x: x, y: y)
         
         for node in nodes(at: point) where (node as? DustImageNode) != nil {
@@ -190,8 +193,8 @@ extension GameScene {
         let fadeOutAction = SKAction.changeVolume(to: 0.0, duration: 1.0)
         
         // 2. play clear sound after sweep cound fades out
-        sweepSound.run(fadeOutAction) { [weak self] in
-            let clearSound = SKAudioNode(fileNamed: Assets.clearSound)
+        purringSound.run(fadeOutAction) { [weak self] in
+            let clearSound = SKAudioNode(fileNamed: Assets.meowSound)
             clearSound.autoplayLooped = false
             self?.addChild(clearSound)
             

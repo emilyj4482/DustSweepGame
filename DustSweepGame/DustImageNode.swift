@@ -8,9 +8,9 @@
 import SpriteKit
 
 class DustImageNode: SKSpriteNode {
-    init(dust: Dust) {
-        let texture = SKTexture(imageNamed: dust.imageName)
-        let size = dust.size
+    init() {
+        let texture = SKTexture(imageNamed: Assets.dust.rawValue)
+        let size = CGSize(width: 50, height: 25)
         super.init(texture: texture, color: .clear, size: size)
         zPosition = 2
         name = "dust"

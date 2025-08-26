@@ -8,11 +8,11 @@
 import Foundation
 
 enum Assets: String {
-    case woodenfloor
-    case box
-    case duster
+    case background
+    case dust
+    case hand
     case restart
     
-    static let sweepSound: String = "sweepSound.m4a"
-    static let clearSound: String = "clearSound.mp3"
+    static let purringSound: String = "cat-purring.mp3"    // https://pixabay.com/ko/sound-effects/cat-is-purring-27823/
+    static let meowSound: String = "meow.mp3"
 }
