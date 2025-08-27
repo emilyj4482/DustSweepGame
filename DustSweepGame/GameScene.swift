@@ -59,6 +59,12 @@ class GameScene: SKScene {
         addChild(catFaceImage)
     }
     
+    private func resetCatFace() {
+        let imageName = Cat.allCases.randomElement()?.rawValue ?? Cat.cheese.rawValue
+        let texture = SKTexture(imageNamed: imageName)
+        catFaceImage.texture = texture
+    }
+    
     private func addHandImage() {
         let width = catFaceImage.size.width / 4
         
@@ -127,9 +133,10 @@ extension GameScene {
         
         if restartImage.contains(location) {
             hasClearSoundPlayed = false
+            setHandPosition()
+            resetCatFace()
             addDusts()
             restartImage.removeFromParent()
-            setHandPosition()
         }
     }
     
