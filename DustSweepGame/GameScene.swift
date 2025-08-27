@@ -105,8 +105,6 @@ class GameScene: SKScene {
     private var ishandImageTouched: Bool = false
     
     private var hasClearSoundPlayed: Bool = false
-    
-    private var isGameOver: Bool = false
 }
 
 extension GameScene {
