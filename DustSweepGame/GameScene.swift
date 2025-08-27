@@ -86,10 +86,14 @@ class GameScene: SKScene {
         let x = CGFloat.random(in: xRange)
         let y = CGFloat.random(in: yRange)
         
-        let dust = DustImageNode()
-        dust.position = CGPoint(x: x, y: y)
+        let node = SKSpriteNode(imageNamed: Assets.dust.rawValue)
         
-        addChild(dust)
+        node.size = CGSize(width: 40, height: 40)
+        node.zPosition = 2
+        node.position = CGPoint(x: x, y: y)
+        node.name = "dust"
+        
+        addChild(node)
     }
     
     private func addDusts() {
@@ -170,7 +174,7 @@ extension GameScene {
         let y = handImage.position.y + handImage.size.height / 2
         let point = CGPoint(x: x, y: y)
         
-        for node in nodes(at: point) where (node as? DustImageNode) != nil {
+        for node in nodes(at: point) where node.name == "dust" {
             let moveAction = SKAction.move(to: point, duration: 0.01)
             let fadeAction = SKAction.fadeAlpha(to: 0, duration: 0.7)
             let removeAction = SKAction.removeFromParent()
