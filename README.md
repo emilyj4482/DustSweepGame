@@ -158,7 +158,7 @@ override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
 - 따라서 터치 이벤트가 빠르게 연속 발생하면 이미 삭제가 예약된 노드에 대해 또 `removeFromParent()` 호출(fatal error)하거나 아직 추가되지 않은 노드를 다시 `addChild()` 호출(중복 추가)하는 경우가 생김
 - 즉 터치 이벤트 처리 속도가 `SpriteKit`의 렌더링 속도보다 빨라지면서 add/remove 호출 순서가 꼬이게 되고, 그 결과 `SpriteKit`이 내부 트리 상태를 유지하지 못해 크래시 발생
 #### 😇 해결
-`addChild`, `removeFromParent` 연속 호출 방식을 제거하고 볼륨을 제어하는 방식으로 구현
+`addChild`, `removeFromParent` 연속 호출 방식을 제거하고 볼륨을 제어하는 방식으로 대체
 ```swift
 override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     if isHandImageTouched {
