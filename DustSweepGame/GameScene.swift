@@ -108,7 +108,7 @@ class GameScene: SKScene {
         }
     }
     
-    private var ishandImageTouched: Bool = false
+    private var isHandImageTouched: Bool = false
     
     private var hasClearSoundPlayed: Bool = false
 }
@@ -124,10 +124,10 @@ extension GameScene {
         let xRange: ClosedRange<CGFloat> = handImage.position.x - handImage.size.width / 2 ... handImage.position.x + handImage.size.width / 2
         let yRange: ClosedRange<CGFloat> = handImage.position.y - handImage.size.height / 2 ... handImage.position.y + handImage.size.height / 2
         
-        ishandImageTouched = xRange.contains(location.x) && yRange.contains(location.y)
+        isHandImageTouched = xRange.contains(location.x) && yRange.contains(location.y)
         
         // play purring sound only when hand image is touched
-        if ishandImageTouched {
+        if isHandImageTouched {
             playPurringSound()
         }
         
@@ -145,7 +145,7 @@ extension GameScene {
         
         let location = touch.location(in: self)
         
-        if ishandImageTouched {
+        if isHandImageTouched {
             let moveAction = SKAction.move(to: location, duration: 0.07)
             handImage.run(moveAction)
             cleanDusts()
@@ -159,7 +159,7 @@ extension GameScene {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        ishandImageTouched = false
+        isHandImageTouched = false
         
         // purring sound has to be off when not hand image moving
         let fadeOutAction = SKAction.changeVolume(to: 0, duration: 0.3)
