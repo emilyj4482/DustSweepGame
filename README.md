@@ -17,7 +17,7 @@
 class GameScene: SKScene {
     // ... //
 
-    private var ishandImageTouched: Bool = false
+    private var isHandImageTouched: Bool = false
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
@@ -27,7 +27,7 @@ class GameScene: SKScene {
         let xRange: ClosedRange<CGFloat> = handImage.position.x - handImage.size.width / 2 ... handImage.position.x + handImage.size.width / 2
         let yRange: ClosedRange<CGFloat> = handImage.position.y - handImage.size.height / 2 ... handImage.position.y + handImage.size.height / 2
 
-        ishandImageTouched = xRange.contains(location.x) && yRange.contains(location.y)
+        isHandImageTouched = xRange.contains(location.x) && yRange.contains(location.y)
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -35,7 +35,7 @@ class GameScene: SKScene {
         let location = touch.location(in: self)
 
         // 플래그 조건에 맞으면 손가락 노드 이동
-        if ishandImageTouched {
+        if isHandImageTouched {
             let moveAction = SKAction.move(to: location, duration: 0.07)
             handImage.run(moveAction)
             cleanDusts()
