@@ -1,7 +1,8 @@
 # DustSweepGame (고양이 먼지 털기 게임)
-고양이 얼굴에 묻은 먼지를 털어내는 게임입니다.
+화면을 문질러 고양이 얼굴에 묻은 먼지를 털어내는 게임입니다.
 - `SpriteKit`으로 구현
-- 개발과정을 담은 포스팅 시리즈 : https://velog.io/@emilyj4482/series/DustSweepGame
+- [개발과정을 담은 포스팅 시리즈](https://velog.io/@emilyj4482/series/DustSweepGame)
+- [시연 영상](https://youtube.com/shorts/hRdC9_LExdE?feature=share)
 
 ## 목차
 - [주요 구현내용](#주요-구현내용)
@@ -91,7 +92,7 @@ private func cleanDusts() {
 
 ### 📌 SKAction 시퀀스 활용
 여러 애니메이션의 연속 적용을 위해 `SKAction.sequence`를 활용하였습니다. 시퀀스를 통해 좀더 자연스러운 시각 효과를 적용할 수 있습니다.
-> ex. 먼지 제거 액션 : 손가락이 문지르는 위치로 짧게 쓸리도록 이동 액션 → 이미지가 서서히 투명해짐 → 노드를 씬에서 제거
+- 먼지 제거 액션 : 손가락이 문지르는 위치로 짧게 쓸리도록 이동 액션 → 이미지가 서서히 투명해짐 → 노드를 씬에서 제거
 ```swift
 for node in nodes(at: point) where node.name == "dust" {
     let moveAction = SKAction.move(to: point, duration: 0.01)
@@ -103,7 +104,27 @@ for node in nodes(at: point) where node.name == "dust" {
     node.run(sequenceAction)
 }
 ```
+- 제거 완료 액션 : 그르릉 소리 서서히 작아짐 → 기분 좋은 고양이의 야옹 소리 재생 → 야옹 오디오 노드 씬에서 제거
+```swift
+private func playClearSound() {
+    let fadeOutAction = SKAction.changeVolume(to: 0.0, duration: 0.5)
 
+    purringSound.run(fadeOutAction) { [weak self] in
+        let clearSound = SKAudioNode(fileNamed: Assets.meowSound)
+        clearSound.autoplayLooped = false
+        self?.addChild(clearSound)
+            
+        let setVolumeAction = SKAction.changeVolume(to: 0.3, duration: 0.0)
+        let playAction = SKAction.play()
+        let waitAction = SKAction.wait(forDuration: 2.0)
+        let removeAction = SKAction.removeFromParent()
+            
+        let sequence = SKAction.sequence([setVolumeAction, playAction, waitAction, removeAction])
+            
+        clearSound.run(sequence)
+    }
+}
+```
 ## 트러블슈팅
 ### ⚠️ 오디오 노드 추가/삭제 타이밍과 터치 이벤트 충돌 문제
 #### ☹️ 문제
